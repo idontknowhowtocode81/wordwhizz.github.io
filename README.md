@@ -1,1 +1,970 @@
 # idontknowhowtocode.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Word Whizz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root{
+  --purple:#6C4CF1;
+  --purple-dk:#4A2FC0;
+  --pink:#FF5C9E;
+  --pink-dk:#D62E76;
+  --yellow:#FFC93C;
+  --yellow-dk:#E09E00;
+  --green:#3DD68C;
+  --green-dk:#1FAE6C;
+  --red:#FF5C6C;
+  --red-dk:#E5364A;
+  --blue:#43B6FF;
+  --blue-dk:#1D8FE0;
+  --orange:#FF9F43;
+  --orange-dk:#DB7A1E;
+  --navy:#241B4B;
+  --ink:#453B72;
+  --cloud:#FFFFFF;
+  --cloud-2:#F4F1FF;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Nunito',sans-serif;
+  color:var(--navy);
+  background:linear-gradient(120deg,#2A1A6B,#7B2FF7 45%,#FF3CAC 90%);
+  background-size:220% 220%;
+  animation:bgShift 16s ease infinite;
+  overflow-x:hidden;
+}
+@keyframes bgShift{
+  0%{background-position:0% 30%;}
+  50%{background-position:100% 70%;}
+  100%{background-position:0% 30%;}
+}
+
+/* decorative floating shapes */
+.blob{position:fixed; border-radius:50%; filter:blur(6px); opacity:0.30; z-index:0; animation:float 10s ease-in-out infinite;}
+.blob1{width:280px;height:280px;background:var(--pink); top:-80px; left:-60px;}
+.blob2{width:220px;height:220px;background:var(--yellow); bottom:-60px; right:6%; animation-delay:2.5s;}
+.blob3{width:170px;height:170px;background:var(--blue); top:12%; right:-60px; animation-delay:5s;}
+.blob4{width:140px;height:140px;background:var(--green); bottom:14%; left:4%; animation-delay:1.2s;}
+@keyframes float{
+  0%,100%{transform:translateY(0) translateX(0);}
+  50%{transform:translateY(-26px) translateX(18px);}
+}
+
+/* ---------------- top nav ---------------- */
+.topnav{
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1100px; margin:0 auto;
+  padding:22px 30px 0;
+}
+.logo{
+  font-family:'Fredoka',sans-serif;
+  font-weight:700;
+  font-size:30px;
+  color:white;
+  text-shadow:0 3px 0 rgba(0,0,0,0.15);
+  letter-spacing:0.5px;
+  display:flex; align-items:center; gap:10px;
+}
+.logo .tag{
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  color:rgba(255,255,255,0.75);
+  letter-spacing:0.3px;
+}
+.nav-right{display:flex; align-items:center; gap:10px;}
+.pill{
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.16);
+  backdrop-filter:blur(6px);
+  border:1.5px solid rgba(255,255,255,0.35);
+  border-radius:100px;
+  padding:7px 14px;
+  font-family:'Fredoka',sans-serif;
+  font-weight:600;
+  font-size:14px;
+  color:white;
+}
+#sound-toggle{
+  border:none;
+  background:rgba(255,255,255,0.16);
+  border:1.5px solid rgba(255,255,255,0.35);
+  border-radius:100px;
+  width:38px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  font-size:16px;
+  transition:transform .12s ease;
+}
+#sound-toggle:hover{transform:scale(1.08);}
+
+/* ---------------- stage ---------------- */
+.stage{
+  position:relative; z-index:2;
+  max-width:1100px;
+  margin:26px auto 60px;
+  padding:0 30px;
+}
+#screen.fade-in{animation:screenFade .3s ease;}
+@keyframes screenFade{
+  0%{opacity:0; transform:translateY(10px);}
+  100%{opacity:1; transform:translateY(0);}
+}
+
+.panel{
+  background:linear-gradient(180deg, rgba(255,255,255,0.97), rgba(248,246,255,0.97));
+  border-radius:32px;
+  box-shadow:0 30px 70px rgba(20,10,60,0.35);
+  padding:36px 40px;
+}
+
+/* ---------------- menu screens (level / category) ---------------- */
+.menu-title{
+  text-align:center;
+  font-family:'Fredoka',sans-serif;
+  font-weight:600;
+  font-size:26px;
+  color:var(--navy);
+  margin-bottom:6px;
+}
+.menu-sub{
+  text-align:center;
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:14px;
+  color:var(--ink);
+  opacity:0.6;
+  margin-bottom:28px;
+}
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:20px;
+}
+.jcard{
+  border:none;
+  border-radius:22px;
+  cursor:pointer;
+  color:white;
+  font-family:'Fredoka',sans-serif;
+  transition:transform .12s ease, box-shadow .12s ease;
+  background:var(--main-c);
+  box-shadow:0 7px 0 var(--shadow-c);
+  padding:26px 22px;
+  text-align:left;
+}
+.jcard:hover{transform:translateY(-4px); box-shadow:0 11px 0 var(--shadow-c);}
+.jcard:active{transform:translateY(5px); box-shadow:0 2px 0 var(--shadow-c);}
+
+.level-card .name{font-size:23px;}
+.level-card .stars{display:block; font-size:14px; margin-top:4px; opacity:0.9; font-family:'Nunito',sans-serif; font-weight:800;}
+.level-card .attempts{
+  margin-top:14px;
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:13px;
+  background:rgba(255,255,255,0.25);
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:100px;
+}
+
+.cat-card{display:flex; flex-direction:column; align-items:flex-start; gap:12px;}
+.cat-card .icon-circle{
+  width:52px;height:52px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.28);
+  display:flex;align-items:center;justify-content:center;
+}
+.cat-card .icon-circle svg{width:28px;height:28px;}
+.cat-card .name{font-size:20px;}
+
+.back-row{margin-top:26px; text-align:center;}
+.link-btn{
+  background:none; border:none;
+  font-family:'Fredoka',sans-serif;
+  color:var(--ink); opacity:0.55;
+  font-size:15px; cursor:pointer;
+}
+.link-btn:hover{opacity:0.85;}
+
+.credit-footer{
+  text-align:center;
+  margin-top:36px;
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+  font-size:12px;
+  color:var(--ink);
+  opacity:0.4;
+}
+
+/* ---------------- gameplay layout ---------------- */
+.game-grid{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:0;
+}
+.arena{
+  background:linear-gradient(180deg, var(--purple), var(--purple-dk));
+  border-radius:32px 0 0 32px;
+  padding:34px 26px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:white;
+  position:relative;
+  overflow:hidden;
+}
+.arena::before{
+  content:"";
+  position:absolute;
+  width:260px;height:260px;
+  background:radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%);
+  top:-40px; left:50%; transform:translateX(-50%);
+}
+.arena-badges{
+  display:flex; gap:8px; margin-bottom:18px; position:relative; z-index:1;
+}
+.arena-badge{
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.3);
+  padding:4px 11px;
+  border-radius:100px;
+  font-family:'Fredoka',sans-serif;
+  font-weight:600;
+  font-size:12px;
+}
+#mascot-wrap{position:relative; z-index:1; height:150px; display:flex;align-items:center;justify-content:center;}
+#mascot-wrap svg{height:145px; transition:transform .15s ease;}
+#mascot-wrap svg.bounce{animation:mascotBounce .4s ease;}
+#mascot-wrap svg.wobble{animation:mascotWobble .4s ease;}
+@keyframes mascotBounce{
+  0%{transform:scale(1) translateY(0);}
+  35%{transform:scale(1.12,0.9) translateY(6px);}
+  65%{transform:scale(0.95,1.08) translateY(-8px);}
+  100%{transform:scale(1) translateY(0);}
+}
+@keyframes mascotWobble{
+  0%,100%{transform:rotate(0deg) translateX(0);}
+  25%{transform:rotate(-7deg) translateX(-5px);}
+  75%{transform:rotate(7deg) translateX(5px);}
+}
+.hearts-row{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:5px;
+  margin-top:14px; position:relative; z-index:1; max-width:220px;
+}
+.heart{font-size:20px; transition:transform .2s ease, opacity .2s ease;}
+.heart.lost{opacity:0.25; transform:scale(0.7);}
+.heart.shake{animation:heartshake .4s ease;}
+@keyframes heartshake{
+  0%,100%{transform:scale(1);}
+  30%{transform:scale(1.3) rotate(-10deg);}
+  60%{transform:scale(0.9) rotate(8deg);}
+}
+.attempts-caption{
+  margin-top:10px;
+  font-family:'Fredoka',sans-serif;
+  font-size:13px;
+  opacity:0.85;
+  position:relative; z-index:1;
+}
+.arena-back{
+  margin-top:auto;
+  background:none; border:none;
+  color:rgba(255,255,255,0.75);
+  font-family:'Fredoka',sans-serif;
+  font-size:14px;
+  cursor:pointer;
+  padding-top:22px;
+  position:relative; z-index:1;
+}
+.arena-back:hover{color:white;}
+
+.board{
+  background:var(--cloud);
+  border-radius:0 32px 32px 0;
+  padding:38px 46px;
+  display:flex;
+  flex-direction:column;
+}
+#word-row{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+  margin-bottom:16px;
+}
+.tile{
+  width:42px;height:52px;
+  border-radius:12px;
+  background:var(--cloud-2);
+  border:2px solid #E1DAFF;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka',sans-serif;
+  font-weight:600;
+  font-size:26px;
+  color:var(--navy);
+  text-transform:uppercase;
+}
+.tile.space{background:none; border:none; width:18px;}
+.tile.filled{
+  background:linear-gradient(160deg, var(--green), var(--green-dk));
+  border-color:transparent;
+  color:white;
+  animation:pop .32s ease;
+}
+@keyframes pop{
+  0%{transform:scale(0.5); box-shadow:0 0 20px 5px rgba(61,214,140,0.7);}
+  60%{transform:scale(1.18);}
+  100%{transform:scale(1); box-shadow:0 0 0 rgba(61,214,140,0);}
+}
+
+#hint-bubble{
+  max-width:420px;
+  margin:0 auto 18px;
+  background:var(--yellow);
+  color:#5B4200;
+  font-weight:800;
+  font-size:14px;
+  padding:10px 18px;
+  border-radius:16px;
+  text-align:center;
+  position:relative;
+  opacity:0;
+  transform:translateY(-6px);
+  transition:all .3s ease;
+}
+#hint-bubble.show{opacity:1; transform:translateY(0);}
+#hint-bubble::after{
+  content:"";
+  position:absolute; top:-7px; left:50%; transform:translateX(-50%);
+  border-left:7px solid transparent; border-right:7px solid transparent;
+  border-bottom:7px solid var(--yellow);
+}
+
+#keyboard{
+  margin-top:auto;
+  padding-top:18px;
+  display:flex; flex-direction:column; gap:10px; align-items:center;
+}
+.kb-row{display:flex; gap:8px;}
+.key{
+  width:44px;height:50px;
+  border-radius:12px;
+  background:var(--cloud-2);
+  border:none;
+  box-shadow:0 5px 0 #D8D2F5;
+  color:var(--navy);
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  cursor:pointer;
+  transition:transform .07s ease, box-shadow .07s ease;
+}
+.key:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 7px 0 #D8D2F5;}
+.key:active:not(:disabled){transform:translateY(4px); box-shadow:0 1px 0 #D8D2F5;}
+.key:disabled{opacity:0.3; cursor:default;}
+.key.correct{background:linear-gradient(160deg, var(--green), var(--green-dk)); color:white; box-shadow:0 5px 0 var(--green-dk); opacity:1;}
+.key.wrong{background:linear-gradient(160deg, var(--red), var(--red-dk)); color:white; box-shadow:0 5px 0 var(--red-dk); opacity:1;}
+.shake-anim{animation:shakeit .35s ease;}
+@keyframes shakeit{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  75%{transform:translateX(6px);}
+}
+
+.board.shake-screen{animation:boardShake .32s ease;}
+@keyframes boardShake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-7px) rotate(-0.3deg);}
+  40%{transform:translateX(6px) rotate(0.3deg);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(3px);}
+}
+.board.flash-wrong{box-shadow:inset 0 0 50px 8px rgba(255,92,108,0.45);}
+
+/* ---------------- end panel ---------------- */
+#end-overlay{
+  position:fixed; inset:0; z-index:10;
+  background:rgba(36,27,75,0.55);
+  display:flex; align-items:center; justify-content:center;
+  animation:overlayFade .25s ease;
+}
+@keyframes overlayFade{from{opacity:0;} to{opacity:1;}}
+#end-panel{
+  background:white;
+  border-radius:28px;
+  padding:44px 50px;
+  text-align:center;
+  min-width:380px;
+  animation:endPop .35s ease;
+  box-shadow:0 30px 70px rgba(0,0,0,0.4);
+}
+@keyframes endPop{
+  0%{opacity:0; transform:translateY(18px) scale(0.95);}
+  100%{opacity:1; transform:translateY(0) scale(1);}
+}
+.end-emoji{font-size:64px; display:block; margin-bottom:4px;}
+#end-panel h2{font-family:'Fredoka',sans-serif; font-size:28px; margin:4px 0 4px;}
+h2.win{color:var(--green-dk);}
+h2.lose{color:var(--red-dk);}
+#end-panel .reveal{font-family:'Nunito',sans-serif; font-weight:700; color:var(--ink); margin:2px 0 8px; font-size:16px;}
+.reward-row{
+  display:flex; justify-content:center; gap:20px; margin:12px 0 22px;
+  font-family:'Fredoka',sans-serif; font-weight:600; color:var(--navy); font-size:16px;
+}
+.reward-row span{display:flex; align-items:center; gap:6px;}
+.btn-row{display:flex; gap:12px; justify-content:center;}
+.big-btn{
+  padding:13px 28px; font-size:17px; font-weight:600; color:white;
+  background:var(--purple); box-shadow:0 5px 0 var(--purple-dk);
+  border:none; border-radius:16px; font-family:'Fredoka',sans-serif; cursor:pointer;
+  transition:transform .07s ease, box-shadow .07s ease;
+}
+.big-btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 var(--purple-dk);}
+.big-btn:active{transform:translateY(4px); box-shadow:0 1px 0 var(--purple-dk);}
+.big-btn.secondary{background:var(--cloud-2); color:var(--ink); box-shadow:0 5px 0 #DCD5F7;}
+.big-btn.secondary:hover{box-shadow:0 7px 0 #DCD5F7;}
+.big-btn.secondary:active{box-shadow:0 1px 0 #DCD5F7;}
+
+#confetti-canvas{position:fixed; inset:0; pointer-events:none; z-index:50;}
+
+@media (max-width:880px){
+  .game-grid{grid-template-columns:1fr;}
+  .arena{border-radius:32px 32px 0 0; flex-direction:row; flex-wrap:wrap; justify-content:center; gap:14px;}
+  .arena::before{display:none;}
+  .board{border-radius:0 0 32px 32px;}
+  .menu-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<div class="blob blob4"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="topnav">
+  <div class="logo">🪢 WORD WHIZZ <span class="tag">guess it before you're out of hearts</span></div>
+  <div class="nav-right">
+    <div class="pill" id="streak-pill">🔥 <span id="streak-val">0</span></div>
+    <button id="sound-toggle">🔊</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div id="screen"></div>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const DIFFICULTIES = {
+  easy: {
+    attempts: 10,
+    stars: '⭐',
+    color: 'var(--green)', shadow: 'var(--green-dk)',
+    categories: {
+      celebrities: {
+        shahrukhkhan: 'An indian actor famously known for DDLJ',
+        viratkohli: 'One of the greats of cricket, famously known for staying in one IPL team 19 seasons',
+        aishwaryarai: 'Indian actress who was also crowned Miss World',
+        sachintendulkar: 'Highest run scorer in international category',
+        sushmitasen: 'Indian actress who was also crowned Miss Universe',
+        rajnikath: 'A tamil actor also known as thaliva'
+      },
+      trees: {
+        peepal: 'A tree with the most spiritual significance',
+        banyan: 'The national tree of India',
+        ashoka: 'A tall tree with slender and glossy leaves',
+        neem: 'A tree with medicinal properties',
+        shisham: 'Tree also known as indian rosewood'
+      },
+      animals: {
+        dog: 'The most common pet in households',
+        monkey: 'Most commonly found on trees, most fond of bananas',
+        fish: 'Most common aquatic animal',
+        lion: 'King of the Jungle',
+        pigeon: 'The most commonly found bird',
+        eagle: 'A well known predator bird',
+        pig: 'An animal that loves to stay in the mud'
+      },
+      science: {
+        physics: 'Branch of science that deals with mechanics',
+        chemistry: 'Branch of science that deals with chemicals',
+        biology: 'Branch of science that deals with life sciences',
+        lab: 'The specific room where scientists conduct experiments'
+      },
+      geography: {
+        nile: 'The longest river on earth',
+        everest: 'The tallest mountain on earth',
+        pacific: 'The largest ocean on earth',
+        amazon: 'The biggest forest on earth'
+      }
+    }
+  },
+  medium: {
+    attempts: 8,
+    stars: '⭐⭐',
+    color: 'var(--yellow)', shadow: 'var(--yellow-dk)',
+    categories: {
+      flowers: {
+        rose: 'A flower with thorns on the stem, with a beautiful fragrance',
+        marigold: 'Vibrant orange and yellow colored flowers',
+        lotus: 'National flower of india',
+        hibiscus: 'A pink colored flower also known as gudhal',
+        bougainvillea: 'Magenta colored flowers, with paper-like petals',
+        jasmine: 'A white fragrant flower'
+      },
+      animals: {
+        donkey: 'The most common domestic animal used to carry heavy loads',
+        buffalo: 'Second most milk giving animal in india',
+        'blue whale': 'Biggest aquatic animal, also has a deadly game after it',
+        tiger: 'Wild animal with black stripes on yellow body',
+        hyena: 'Scavenger who looks like a dog and laughs like a human'
+      },
+      science: {
+        energy: 'The ability to do work or cause change',
+        magnet: 'An object or material that produces an invisible magnetic field',
+        frequency: 'The number of times something happens in a particular period',
+        force: 'The push or pull applied to an object'
+      },
+      geography: {
+        'ring of fire': 'The volcanic range present in the pacific area',
+        australia: 'The only continent that is also a country',
+        island: 'The piece of land that is covered by water on all four sides',
+        india: 'The most populated subcontinent on earth'
+      }
+    }
+  },
+  hard: {
+    attempts: 6,
+    stars: '⭐⭐⭐',
+    color: 'var(--red)', shadow: 'var(--red-dk)',
+    categories: {
+      sports: {
+        cricket: 'A bat-and-ball team sport played between two teams of 11 players',
+        football: 'A sport where the objective is to score points or goals by moving a ball into the opposing territory',
+        tennis: 'A racket sport played either between two individuals or two teams of two',
+        badminton: 'A fast-paced racquet sport where two or four players use lightweight racquets to hit a shuttlecock',
+        tabletennis: 'Also known as ping-pong is a fast-paced racket sport played on a stationary table divided by a central net',
+        basketball: 'A team sport where two teams of five players compete to score points by shooting a ball through a raised circular hoop basket'
+      },
+      animals: {
+        rhinoceros: 'A large animal with one or two horns on its snout',
+        chimpanzee: 'A great ape closely related to humans',
+        hummingbird: 'A tiny bird that can hover in place',
+        crocodile: 'A large reptile that lives in rivers and swamps'
+      },
+      science: {
+        photosynthesis: 'How plants turn sunlight into energy',
+        electromagnetic: 'Relating to electricity and magnetism combined',
+        mitochondria: 'The powerhouse of the cell',
+        gravitational: 'Relating to the force that pulls objects together'
+      },
+      geography: {
+        mississippi: 'A major river in the United States',
+        kilimanjaro: 'The tallest mountain in Africa',
+        mediterranean: 'A sea bordered by Europe, Africa, and Asia',
+        antarctica: 'The coldest continent, covered in ice'
+      }
+    }
+  }
+};
+
+const CAT_STYLE = {
+  celebrities: {color:'var(--orange)', shadow:'var(--orange-dk)', icon:`<path d="M12 3.5l2.35 4.76 5.25.76-3.8 3.7.9 5.23L12 15.4l-4.7 2.55.9-5.23-3.8-3.7 5.25-.76z"/>`},
+  trees:       {color:'var(--green)',  shadow:'var(--green-dk)',  icon:`<path d="M12 3.5 7 12h2.6L6 18h5M12 3.5 17 12h-2.6L21 18h-5M12 14v6"/>`},
+  flowers:     {color:'var(--purple)', shadow:'var(--purple-dk)', icon:`<circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><circle cx="6" cy="12" r="2.2"/><circle cx="18" cy="12" r="2.2"/>`},
+  sports:      {color:'var(--orange)', shadow:'var(--orange-dk)', icon:`<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4v16M6.3 6.3c3 3 3 8.4 0 11.4M17.7 6.3c-3 3-3 8.4 0 11.4"/>`},
+  animals:     {color:'var(--pink)',  shadow:'var(--pink-dk)',  icon:`<circle cx="12" cy="14" r="7"/><circle cx="6" cy="7" r="2.6"/><circle cx="18" cy="7" r="2.6"/><circle cx="8.5" cy="12" r="1.4"/><circle cx="15.5" cy="12" r="1.4"/>`},
+  science:     {color:'var(--blue)',  shadow:'var(--blue-dk)',  icon:`<path d="M10 3h4M10.5 3v6l-5 9a2 2 0 0 0 1.8 3h9.4a2 2 0 0 0 1.8-3l-5-9V3"/>`},
+  geography:   {color:'var(--yellow)', shadow:'var(--yellow-dk)', icon:`<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c3.5 3.5 3.5 12.5 0 16M12 4c-3.5 3.5-3.5 12.5 0 16"/>`}
+};
+
+/* ===================== STATE ===================== */
+let lastWordPlayed = null;
+let streak = 0;
+let coins = 0;
+let soundOn = true;
+let state = {};
+
+const screenEl = document.getElementById('screen');
+
+function setScreen(html){
+  screenEl.classList.remove('fade-in');
+  screenEl.innerHTML = html;
+  void screenEl.offsetWidth; // restart animation
+  screenEl.classList.add('fade-in');
+}
+
+function pickWord(wordOptions){
+  let choices = Object.keys(wordOptions);
+  if (choices.length > 1 && choices.includes(lastWordPlayed)){
+    choices = choices.filter(w => w !== lastWordPlayed);
+  }
+  const word = choices[Math.floor(Math.random()*choices.length)];
+  lastWordPlayed = word;
+  return word;
+}
+
+/* ===================== SOUND (WebAudio, no assets) ===================== */
+let actx;
+function ctx(){ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); return actx; }
+function beep(freq, dur, type='sine', delay=0, vol=0.18){
+  if(!soundOn) return;
+  const c = ctx();
+  const o = c.createOscillator();
+  const g = c.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.value = vol;
+  o.connect(g); g.connect(c.destination);
+  const t0 = c.currentTime + delay;
+  o.start(t0);
+  g.gain.exponentialRampToValueAtTime(0.001, t0+dur);
+  o.stop(t0+dur);
+}
+function sfxKey(){ beep(520,0.06,'square'); }
+function sfxCorrect(){ beep(660,0.12,'triangle'); beep(880,0.14,'triangle',0.08); }
+function sfxWrong(){ beep(180,0.22,'sawtooth'); }
+function sfxWin(){ [523,659,784,1046].forEach((f,i)=>beep(f,0.18,'triangle',i*0.11,0.2)); }
+function sfxLose(){ beep(300,0.25,'sawtooth'); beep(200,0.3,'sawtooth',0.2); }
+
+document.getElementById('sound-toggle').addEventListener('click', (e)=>{
+  soundOn = !soundOn;
+  e.target.textContent = soundOn ? '🔊' : '🔇';
+});
+
+/* ===================== MASCOT ===================== */
+function mascotSVG(frac, isDead){
+  const amplitude = (-16 + 34 * frac).toFixed(1);
+  let eyes = `<circle cx="45" cy="52" r="4.5" fill="#2B2250"/><circle cx="75" cy="52" r="4.5" fill="#2B2250"/>`;
+  let brows = '';
+  let mouth;
+
+  if (isDead){
+    eyes = `<path d="M40 48 l10 10 M50 48 l-10 10 M70 48 l10 10 M80 48 l-10 10" stroke="#2B2250" stroke-width="3.5" stroke-linecap="round"/>`;
+    mouth = `<path d="M48 76 Q60 68 72 76" stroke="#2B2250" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+  } else {
+    mouth = `<path d="M46 70 Q60 ${70 + Number(amplitude)} 74 70" stroke="#2B2250" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+    if (frac < 0.55){
+      const browOpacity = Math.min(1, (0.55 - frac) * 2.4).toFixed(2);
+      brows = `<path d="M40 44 q6 -6 12 0 M68 44 q6 -6 12 0" stroke="#2B2250" stroke-width="3" fill="none" stroke-linecap="round" opacity="${browOpacity}"/>`;
+    }
+  }
+
+  const bodyColor = isDead ? '#C7BEE8' : 'url(#mgrad)';
+  return `
+  <svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mgrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#B79BFF"/>
+        <stop offset="100%" stop-color="#8A63FF"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="60" cy="112" rx="30" ry="8" fill="#000" opacity="0.12"/>
+    <circle cx="60" cy="60" r="46" fill="${bodyColor}"/>
+    <circle cx="34" cy="42" r="7" fill="${bodyColor}" opacity="0.9"/>
+    <circle cx="86" cy="42" r="7" fill="${bodyColor}" opacity="0.9"/>
+    ${eyes}
+    ${brows}
+    ${mouth}
+  </svg>`;
+}
+
+function updateMascot(){
+  const frac = state.attempts / state.maxAttempts;
+  const isDead = state.attempts <= 0;
+  const wrap = document.getElementById('mascot-wrap');
+  if (wrap) wrap.innerHTML = mascotSVG(frac, isDead);
+}
+
+/* ===================== UI HELPERS ===================== */
+function refreshTopbar(){
+  document.getElementById('streak-val').textContent = streak;
+  let coinPill = document.getElementById('coins-pill');
+  if (!coinPill && coins > 0){
+    coinPill = document.createElement('div');
+    coinPill.className='pill';
+    coinPill.id='coins-pill';
+    document.querySelector('.nav-right').insertBefore(coinPill, document.getElementById('sound-toggle'));
+  }
+  if (coinPill) coinPill.innerHTML = `🪙 <span>${coins}</span>`;
+}
+
+function renderDifficultyStep(){
+  setScreen(`
+    <div class="panel">
+      <div class="menu-title">Choose a level</div>
+      <div class="menu-sub">Pick how many hearts you want to play with</div>
+      <div class="menu-grid">
+        ${Object.keys(DIFFICULTIES).map(d=>{
+          const D = DIFFICULTIES[d];
+          return `<button class="jcard level-card" style="--main-c:${D.color};--shadow-c:${D.shadow}" data-diff="${d}">
+            <div class="name">${d.charAt(0).toUpperCase()+d.slice(1)}</div>
+            <span class="stars">${D.stars}</span>
+            <span class="attempts">${D.attempts} hearts</span>
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="credit-footer">Game by Sampada &amp; Varenya</div>
+    </div>
+  `);
+  screenEl.querySelectorAll('[data-diff]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.difficulty = btn.dataset.diff;
+      renderCategoryStep();
+    });
+  });
+}
+
+function renderCategoryStep(){
+  const cats = Object.keys(DIFFICULTIES[state.difficulty].categories);
+  setScreen(`
+    <div class="panel">
+      <div class="menu-title">Pick a category</div>
+      <div class="menu-sub">${state.difficulty.charAt(0).toUpperCase()+state.difficulty.slice(1)} mode</div>
+      <div class="menu-grid">
+        ${cats.map(c=>{
+          const S = CAT_STYLE[c];
+          return `<button class="jcard cat-card" style="--main-c:${S.color};--shadow-c:${S.shadow}" data-cat="${c}">
+            <div class="icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">${S.icon}</svg>
+            </div>
+            <div class="name">${c.charAt(0).toUpperCase()+c.slice(1)}</div>
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="back-row"><button class="link-btn" id="back-btn">&larr; choose a different level</button></div>
+    </div>
+  `);
+  screenEl.querySelectorAll('[data-cat]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.category = btn.dataset.cat;
+      startRound();
+    });
+  });
+  document.getElementById('back-btn').addEventListener('click', renderDifficultyStep);
+}
+
+function startRound(){
+  const wordOptions = DIFFICULTIES[state.difficulty].categories[state.category];
+  const word = pickWord(wordOptions);
+  state.word = word;
+  state.hint = wordOptions[word];
+  state.maxAttempts = DIFFICULTIES[state.difficulty].attempts;
+  state.attempts = state.maxAttempts;
+  state.guessedLetters = [];
+  state.revealed = word.split('').map(ch => ch===' ' ? ' ' : null);
+  renderGame();
+}
+
+function renderGame(){
+  setScreen(`
+    <div class="panel" style="padding:0;">
+      <div class="game-grid">
+        <div class="arena">
+          <div class="arena-badges">
+            <span class="arena-badge">${state.difficulty}</span>
+            <span class="arena-badge">${state.category}</span>
+          </div>
+          <div id="mascot-wrap"></div>
+          <div class="hearts-row" id="hearts-row"></div>
+          <div class="attempts-caption" id="attempts-caption"></div>
+          <button class="arena-back" id="quit-btn">&larr; back to menu</button>
+        </div>
+        <div class="board" id="board-el">
+          <div id="word-row"></div>
+          <div id="hint-bubble"></div>
+          <div id="keyboard"></div>
+        </div>
+      </div>
+    </div>
+  `);
+  document.getElementById('quit-btn').addEventListener('click', renderDifficultyStep);
+  buildKeyboard();
+  updateGameView();
+}
+
+function buildKeyboard(){
+  const rows = ['qwertyuiop','asdfghjkl','zxcvbnm'];
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML = rows.map(row=>`
+    <div class="kb-row">
+      ${row.split('').map(l=>`<button class="key" data-letter="${l}">${l.toUpperCase()}</button>`).join('')}
+    </div>
+  `).join('');
+  kb.querySelectorAll('.key').forEach(btn=>{
+    btn.addEventListener('click', ()=>guessLetter(btn.dataset.letter, btn));
+  });
+}
+
+function updateGameView(prevAttempts){
+  const heartsRow = document.getElementById('hearts-row');
+  const wrongCount = state.maxAttempts - state.attempts;
+  heartsRow.innerHTML = Array.from({length: state.maxAttempts}).map((_,i)=>{
+    const lost = i >= state.attempts;
+    const justLost = prevAttempts !== undefined && i === state.attempts && lost;
+    return `<span class="heart ${lost?'lost':''} ${justLost?'shake':''}">❤️</span>`;
+  }).join('');
+
+  document.getElementById('attempts-caption').textContent = `${state.attempts} / ${state.maxAttempts} left`;
+
+  updateMascot();
+
+  const wordRow = document.getElementById('word-row');
+  wordRow.innerHTML = state.word.split('').map((ch,i)=>{
+    if (ch===' ') return `<div class="tile space"></div>`;
+    const shown = state.revealed[i];
+    return `<div class="tile ${shown?'filled':''}">${shown?shown:''}</div>`;
+  }).join('');
+
+  const hintBox = document.getElementById('hint-bubble');
+  if (wrongCount >= Math.floor(state.maxAttempts/2)){
+    hintBox.textContent = '💡 ' + state.hint;
+    hintBox.classList.add('show');
+  } else {
+    hintBox.classList.remove('show');
+    hintBox.textContent='';
+  }
+
+  document.querySelectorAll('.key').forEach(btn=>{
+    const l = btn.dataset.letter;
+    if (state.guessedLetters.includes(l)){
+      btn.disabled = true;
+      btn.classList.add(state.word.includes(l) ? 'correct' : 'wrong');
+    }
+  });
+}
+
+function guessLetter(letter, btnEl){
+  if (!state.word || state.guessedLetters.includes(letter)) return;
+  state.guessedLetters.push(letter);
+  const prevAttempts = state.attempts;
+  const boardEl = document.getElementById('board-el');
+
+  if (state.word.includes(letter)){
+    state.word.split('').forEach((ch,i)=>{ if(ch===letter) state.revealed[i]=letter; });
+    sfxCorrect();
+  } else {
+    state.attempts -= 1;
+    sfxWrong();
+    if (btnEl){ btnEl.classList.add('shake-anim'); setTimeout(()=>btnEl.classList.remove('shake-anim'),350); }
+    if (boardEl){
+      boardEl.classList.add('shake-screen','flash-wrong');
+      setTimeout(()=>boardEl.classList.remove('shake-screen','flash-wrong'), 350);
+    }
+  }
+
+  updateGameView(prevAttempts);
+
+  const mascotSvgEl = document.querySelector('#mascot-wrap svg');
+  if (mascotSvgEl) mascotSvgEl.classList.add(state.word.includes(letter) ? 'bounce' : 'wobble');
+
+  const won = state.revealed.every((v,i)=> state.word[i]===' ' || v!==null);
+  if (won){
+    streak += 1;
+    coins += state.attempts * 10 + 20;
+    refreshTopbar();
+    setTimeout(()=>renderEnd(true), 300);
+  } else if (state.attempts <= 0){
+    streak = 0;
+    refreshTopbar();
+    state.revealed = state.word.split('');
+    updateGameView();
+    setTimeout(()=>renderEnd(false), 300);
+  }
+}
+
+/* Confetti fires ONLY when a word is fully guessed correctly */
+function renderEnd(won){
+  const overlay = document.createElement('div');
+  overlay.id = 'end-overlay';
+  overlay.innerHTML = `
+    <div id="end-panel">
+      <span class="end-emoji">${won ? '🏆' : '💔'}</span>
+      <h2 class="${won?'win':'lose'}">${won ? 'Level Complete!' : 'Out of Hearts!'}</h2>
+      <div class="reveal">The word was <strong>${state.word.toUpperCase()}</strong></div>
+      ${won ? `<div class="reward-row"><span>🪙 +${state.attempts*10+20}</span><span>🔥 ${streak} streak</span></div>` : ''}
+      <div class="btn-row">
+        <button class="big-btn" id="again-btn">${won ? 'Next word' : 'Try again'}</button>
+        <button class="big-btn secondary" id="switch-btn">Menu</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('again-btn').addEventListener('click', ()=>{ overlay.remove(); startRound(); });
+  document.getElementById('switch-btn').addEventListener('click', ()=>{ overlay.remove(); renderDifficultyStep(); });
+
+  if (won){ sfxWin(); launchConfetti(); } else { sfxLose(); }
+}
+
+document.addEventListener('keydown', (e)=>{
+  const key = e.key.toLowerCase();
+  if (/^[a-z]$/.test(key) && state.word){
+    const btn = document.querySelector(`.key[data-letter="${key}"]`);
+    if (btn && !btn.disabled) guessLetter(key, btn);
+  }
+});
+
+document.addEventListener('click', (e)=>{
+  if (e.target.classList && e.target.classList.contains('key') && !e.target.disabled) sfxKey();
+});
+
+/* ===================== CONFETTI ===================== */
+const confettiCanvas = document.getElementById('confetti-canvas');
+const cctx = confettiCanvas.getContext('2d');
+function resizeCanvas(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function launchConfetti(){
+  const colors = ['#FF5C9E','#FFC93C','#3DD68C','#43B6FF','#6C4CF1','#FF9F43'];
+  const particles = Array.from({length:110}).map(()=>({
+    x: confettiCanvas.width/2 + (Math.random()-0.5)*260,
+    y: confettiCanvas.height*0.3,
+    vx: (Math.random()-0.5)*9,
+    vy: Math.random()*-9 - 4,
+    size: Math.random()*7+4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    rot: Math.random()*360,
+    vr: (Math.random()-0.5)*13,
+    shape: Math.random() > 0.5 ? 'rect' : 'circle',
+    life: 0
+  }));
+  let frame=0;
+  function tick(){
+    frame++;
+    cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    let alive=false;
+    particles.forEach(p=>{
+      p.vy += 0.26;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      if (p.y < confettiCanvas.height+20) alive=true;
+      cctx.save();
+      cctx.translate(p.x,p.y);
+      cctx.rotate(p.rot*Math.PI/180);
+      cctx.fillStyle=p.color;
+      cctx.globalAlpha = Math.max(0, 1-p.life/140);
+      if (p.shape==='rect') cctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      else { cctx.beginPath(); cctx.arc(0,0,p.size/2,0,Math.PI*2); cctx.fill(); }
+      cctx.restore();
+    });
+    if (alive && frame<150) requestAnimationFrame(tick);
+    else cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  }
+  tick();
+}
+
+/* ===================== INIT ===================== */
+refreshTopbar();
+renderDifficultyStep();
+</script>
+</body>
+</html>
